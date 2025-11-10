@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Dialog,
   DialogClose,
@@ -18,19 +19,45 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { addTask } from "@/Redux/features/todo/taskSlice";
+import { useAppDispatch } from "@/Redux/hooks";
+
+import { ChevronDown } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FiPlus, FiSave, FiX } from "react-icons/fi";
 
 function AddTaskDialogue() {
+  const dispatch = useAppDispatch();
+  const [open, setOpen] = useState(false);
   const form = useForm();
   const onSubmit = (data) => {
-    console.log(data);
+    const taskData = {
+      ...data,
+      dueDate: data.dueDate ? data.dueDate.toISOString() : "",
+    };
+    console.log(taskData);
+    dispatch(addTask(taskData));
   };
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="md:flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-5 py-2.5 rounded-lg font-medium shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 hover:scale-105 transition-all">
+        <Button className="md:flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-5 py-2.5 rounded-lg font-medium shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 hover:scale-105 transition-all cursor-pointer">
           <FiPlus className="text-lg" />
           <span>Add Task</span>
         </Button>
@@ -106,6 +133,7 @@ function AddTaskDialogue() {
                 </FormItem>
               )}
             />
+
             {/* Priority Selection */}
             <FormField
               control={form.control}
@@ -113,28 +141,72 @@ function AddTaskDialogue() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel />
-                  <FormControl>
-                    <div className="grid gap-3">
-                      <Label
-                        htmlFor="task-priority"
-                        className="text-slate-700 dark:text-slate-300 font-semibold"
-                      >
-                        Priority Level
-                      </Label>
-                      <select
-                        {...field}
-                        value={field.value || ""}
-                        id="task-priority"
-                        name="priority"
-                        className="flex h-11 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
-                      >
-                        <option value="">Select priority...</option>
-                        <option value="low">🟢 Low Priority</option>
-                        <option value="medium">🟡 Medium Priority</option>
-                        <option value="high">🔴 High Priority</option>
-                      </select>
-                    </div>
-                  </FormControl>
+                  <Label
+                    htmlFor="task-priority"
+                    className="text-slate-700 dark:text-slate-300 font-semibold"
+                  >
+                    Priority
+                  </Label>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger className="w-full py-5">
+                      <SelectValue placeholder="Priority Level" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Priority</SelectLabel>
+                        <SelectItem value="low">🟢Low Priority</SelectItem>
+                        <SelectItem value="medium">
+                          🟡Medium Priority
+                        </SelectItem>
+                        <SelectItem value="high">🔴High Priority</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+            {/* Date Picker */}
+            <FormField
+              control={form.control}
+              name="dueDate"
+              render={({ field }) => (
+                <FormItem className="flex flex-col mt-4">
+                  <FormLabel className="text-slate-700 dark:text-slate-300 font-semibold">
+                    Due Date
+                  </FormLabel>
+                  <Popover open={open} onOpenChange={setOpen}>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          className="w-full justify-between font-normal h-11"
+                        >
+                          {field.value
+                            ? field.value.toLocaleDateString() // সরাসরি Date object থেকে
+                            : "Select date"}
+                          <ChevronDown className="h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      className="w-auto overflow-hidden p-0"
+                      align="start"
+                    >
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={(date) => {
+                          field.onChange(date); // ✅ Date object রাখুন, string না!
+                          setOpen(false);
+                        }}
+                        captionLayout="dropdown"
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </FormItem>
               )}
             />
@@ -143,7 +215,7 @@ function AddTaskDialogue() {
               <DialogClose asChild className="flex gap-2 sm:gap-0 ">
                 <Button
                   variant="outline"
-                  className="border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
+                  className="border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer"
                 >
                   <FiX className="mr-2" />
                   Cancel
@@ -151,7 +223,7 @@ function AddTaskDialogue() {
               </DialogClose>
               <Button
                 type="submit"
-                className="bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-all"
+                className="bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-all cursor-pointer"
               >
                 <FiSave className="mr-2" />
                 Save Task

@@ -18,7 +18,7 @@ interface TaskCardProps {
 
 export default function TaskCard({ task }: TaskCardProps) {
   const [isChecked, setIsChecked] = useState(false);
-  console.log(task);
+  console.log(task.priority);
   return (
     <div
       className={`group bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg border transition-all hover:shadow-xl hover:scale-[1.01] ${
@@ -70,7 +70,7 @@ export default function TaskCard({ task }: TaskCardProps) {
             {task.dueDate && (
               <div className="flex items-center gap-1.5">
                 <FiCalendar className="text-purple-600 dark:text-purple-400" />
-                <span>{task.dueDate}</span>
+                <span>{new Date(task.dueDate).toLocaleString()}</span>
               </div>
             )}
             {task.createdAt && (
