@@ -1,5 +1,7 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
+import { toggleCompletedTask } from "@/Redux/features/todo/taskSlice";
+import { useAppDispatch } from "@/Redux/hooks";
 import { useState } from "react";
 import { FiCalendar, FiClock, FiEdit2, FiTrash2 } from "react-icons/fi";
 
@@ -17,8 +19,12 @@ interface TaskCardProps {
 }
 
 export default function TaskCard({ task }: TaskCardProps) {
+  const dispatch = useAppDispatch();
   const [isChecked, setIsChecked] = useState(false);
-  console.log(task.priority);
+  // console.log(task.priority);
+  const handleCompletedTask = (id: string) => {
+    dispatch(toggleCompletedTask(id));
+  };
   return (
     <div
       className={`group bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg border transition-all hover:shadow-xl hover:scale-[1.01] ${
@@ -30,7 +36,10 @@ export default function TaskCard({ task }: TaskCardProps) {
       <div className="flex items-start gap-4">
         {/* Checkbox */}
         <div className="mt-1">
-          <Checkbox className="w-6 h-6 rounded-lg border-2 data-[state=checked]:bg-gradient-to-br data-[state=checked]:from-purple-600 data-[state=checked]:to-pink-600" />
+          <Checkbox
+            onClick={() => handleCompletedTask(task.id)}
+            className="w-6 h-6 rounded-lg border-2 data-[state=checked]:bg-gradient-to-br data-[state=checked]:from-purple-600 data-[state=checked]:to-pink-600"
+          />
         </div>
 
         {/* Task Content */}

@@ -36,23 +36,24 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { addTask } from "@/Redux/features/todo/taskSlice";
 import { useAppDispatch } from "@/Redux/hooks";
+import type { ITask } from "@/types";
 
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form";
 import { FiPlus, FiSave, FiX } from "react-icons/fi";
 
 function AddTaskDialogue() {
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
   const form = useForm();
-  const onSubmit = (data) => {
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
     const taskData = {
       ...data,
       dueDate: data.dueDate ? data.dueDate.toISOString() : "",
     };
     console.log(taskData);
-    dispatch(addTask(taskData));
+    dispatch(addTask(taskData as ITask));
   };
   return (
     <Dialog>
