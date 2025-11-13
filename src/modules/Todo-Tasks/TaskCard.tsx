@@ -1,8 +1,12 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
-import { toggleCompletedTask } from "@/Redux/features/todo/taskSlice";
+import {
+  deletedTask,
+  toggleCompletedTask,
+} from "@/Redux/features/todo/taskSlice";
 import { useAppDispatch } from "@/Redux/hooks";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { FiCalendar, FiClock, FiEdit2, FiTrash2 } from "react-icons/fi";
 
 interface Task {
@@ -20,15 +24,19 @@ interface TaskCardProps {
 
 export default function TaskCard({ task }: TaskCardProps) {
   const dispatch = useAppDispatch();
-  const [isChecked, setIsChecked] = useState(false);
+
   // console.log(task.priority);
   const handleCompletedTask = (id: string) => {
     dispatch(toggleCompletedTask(id));
   };
+  const handleDeletedTask = (id: string) => {
+    dispatch(deletedTask(id));
+    toast.success("Task Removed");
+  };
   return (
     <div
       className={`group bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg border transition-all hover:shadow-xl hover:scale-[1.01] ${
-        isChecked
+        task.isCompleted
           ? "border-green-200 dark:border-green-800 opacity-75"
           : "border-slate-200 dark:border-slate-700"
       }`}
@@ -37,6 +45,7 @@ export default function TaskCard({ task }: TaskCardProps) {
         {/* Checkbox */}
         <div className="mt-1">
           <Checkbox
+            checked={task.isCompleted}
             onClick={() => handleCompletedTask(task.id)}
             className="w-6 h-6 rounded-lg border-2 data-[state=checked]:bg-gradient-to-br data-[state=checked]:from-purple-600 data-[state=checked]:to-pink-600"
           />
@@ -47,7 +56,7 @@ export default function TaskCard({ task }: TaskCardProps) {
           <div className="flex items-center  gap-2 mb-2">
             <h3
               className={`text-lg font-semibold text-slate-800 dark:text-slate-200 ${
-                isChecked
+                task.isCompleted
                   ? "line-through text-slate-500 dark:text-slate-500"
                   : ""
               }`}
@@ -67,7 +76,7 @@ export default function TaskCard({ task }: TaskCardProps) {
           {task.description && (
             <p
               className={`text-slate-600 dark:text-slate-400 mb-3 ${
-                isChecked ? "line-through" : ""
+                task.isCompleted ? "line-through" : ""
               }`}
             >
               {task.description}
@@ -104,6 +113,7 @@ export default function TaskCard({ task }: TaskCardProps) {
           </button>
 
           <button
+            onClick={() => handleDeletedTask(task.id)}
             className="p-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-all"
             aria-label="Delete task"
           >

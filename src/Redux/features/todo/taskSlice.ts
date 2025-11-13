@@ -4,6 +4,7 @@ import { createSlice, nanoid, type PayloadAction } from "@reduxjs/toolkit";
 
 interface InitialState {
   tasks: ITask[];
+  filter: string;
 }
 
 const initialState: InitialState = {
@@ -16,11 +17,16 @@ const initialState: InitialState = {
       priority: "low",
       dueDate: "2025-11-04T18:00:00.000Z",
       isCompleted: false,
+      createdAt: "12/10/2064",
     },
   ],
+  filter: "all",
 };
 
-type DraftTask = Pick<ITask, "title" | "description" | "dueDate" | "priority">;
+type DraftTask = Pick<
+  ITask,
+  "title" | "description" | "dueDate" | "priority" | "createdAt"
+>;
 
 const createTask = (taskData: DraftTask): ITask => {
   return { id: nanoid(), isCompleted: false, ...taskData };
@@ -49,12 +55,34 @@ const taskSlice = createSlice({
           : task
       );
     },
+    deletedTask: (state, action: PayloadAction<string>) => {
+      state.tasks = state.tasks.filter((task) => task.id !== action.payload);
+    },
+    updatedFilterTask: (
+      state,
+      action: PayloadAction<"all" | "low" | "medium" | "high">
+    ) => {
+      state.filter = action.payload;
+    },
   },
 });
 
 export const selectTask = (state: RootState) => {
-  return state.allTodoTasks.tasks;
+  const filter = state.allTodoTasks.filter;
+
+  if (filter === "low") {
+    return state.allTodoTasks.tasks.filter((task) => task.priority === "low");
+  } else if (filter === "medium") {
+    return state.allTodoTasks.tasks.filter(
+      (task) => task.priority === "medium"
+    );
+  } else if (filter === "high") {
+    return state.allTodoTasks.tasks.filter((task) => task.priority === "high");
+  } else {
+    return state.allTodoTasks.tasks;
+  }
 };
 
-export const { addTask, toggleCompletedTask } = taskSlice.actions;
+export const { addTask, toggleCompletedTask, deletedTask, updatedFilterTask } =
+  taskSlice.actions;
 export default taskSlice.reducer;

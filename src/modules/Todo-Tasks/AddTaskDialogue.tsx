@@ -41,6 +41,7 @@ import type { ITask } from "@/types";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form";
+import toast from "react-hot-toast";
 import { FiPlus, FiSave, FiX } from "react-icons/fi";
 
 function AddTaskDialogue() {
@@ -54,9 +55,12 @@ function AddTaskDialogue() {
     };
     console.log(taskData);
     dispatch(addTask(taskData as ITask));
+    toast.success("Add your task");
+    form.reset();
+    setOpen(false);
   };
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="md:flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-5 py-2.5 rounded-lg font-medium shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 hover:scale-105 transition-all cursor-pointer">
           <FiPlus className="text-lg" />

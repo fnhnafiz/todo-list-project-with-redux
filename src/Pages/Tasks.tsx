@@ -1,12 +1,14 @@
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TaskCard from "@/modules/Todo-Tasks/TaskCard";
 import TaskCta from "@/modules/Todo-Tasks/TaskCta";
-import { selectTask } from "@/Redux/features/todo/taskSlice";
-import { useAppSelector } from "@/Redux/hooks";
+import { selectTask, updatedFilterTask } from "@/Redux/features/todo/taskSlice";
+import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
 import { FiInbox, FiFilter, FiCheckCircle } from "react-icons/fi";
 
 function Tasks() {
   const tasks = useAppSelector(selectTask);
-  console.log(tasks);
+  const dispatch = useAppDispatch();
+  // console.log(tasks);
   return (
     <div>
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-purple-50 dark:from-slate-900 dark:via-purple-900/10 dark:to-slate-900 py-10">
@@ -72,6 +74,37 @@ function Tasks() {
                 </div>
               </div>
             </div>
+          </div>
+
+          <div className="flex justify-end my-8">
+            <Tabs defaultValue="all" className="bg-transparent">
+              <TabsList className="bg-transparent">
+                <TabsTrigger
+                  onClick={() => dispatch(updatedFilterTask("all"))}
+                  value="all"
+                >
+                  All
+                </TabsTrigger>
+                <TabsTrigger
+                  onClick={() => dispatch(updatedFilterTask("low"))}
+                  value="low"
+                >
+                  Low
+                </TabsTrigger>
+                <TabsTrigger
+                  onClick={() => dispatch(updatedFilterTask("medium"))}
+                  value="medium"
+                >
+                  Medium
+                </TabsTrigger>
+                <TabsTrigger
+                  onClick={() => dispatch(updatedFilterTask("high"))}
+                  value="high"
+                >
+                  High
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
           </div>
 
           {/* Tasks List */}

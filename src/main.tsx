@@ -7,10 +7,12 @@ import { store } from "./Redux/store.ts";
 import { RouterProvider } from "react-router";
 import router from "./Router/routes.tsx";
 import { ThemeProvider } from "./Provider/theme-provider.tsx";
+import { Toaster } from "react-hot-toast";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <Toaster position="top-center" reverseOrder={false} />
       <Provider store={store}>
         <RouterProvider router={router} />
       </Provider>

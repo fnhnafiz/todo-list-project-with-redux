@@ -1,9 +1,8 @@
 import { ModeToggle } from "@/components/mode-toggle";
 import { useState } from "react";
-import { FiMenu, FiX, FiPlus } from "react-icons/fi";
+import { FiMenu, FiX } from "react-icons/fi";
 import { Link } from "react-router";
 import logo from "../../public/favicon.png";
-import { Button } from "@/components/ui/button";
 import AddTaskDialogue from "@/modules/Todo-Tasks/AddTaskDialogue";
 
 function Navbar() {
