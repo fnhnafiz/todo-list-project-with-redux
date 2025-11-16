@@ -18,6 +18,7 @@ const initialState: InitialState = {
       dueDate: "2025-11-04T18:00:00.000Z",
       isCompleted: false,
       createdAt: "12/10/2064",
+      assignedTo: null,
     },
   ],
   filter: "all",
@@ -25,11 +26,16 @@ const initialState: InitialState = {
 
 type DraftTask = Pick<
   ITask,
-  "title" | "description" | "dueDate" | "priority" | "createdAt"
+  "title" | "description" | "dueDate" | "priority" | "createdAt" | "assignedTo"
 >;
 
 const createTask = (taskData: DraftTask): ITask => {
-  return { id: nanoid(), isCompleted: false, ...taskData };
+  return {
+    ...taskData,
+    id: nanoid(),
+    isCompleted: false,
+    assignedTo: taskData.assignedTo ? taskData.assignedTo : null,
+  };
 };
 const taskSlice = createSlice({
   name: "task",

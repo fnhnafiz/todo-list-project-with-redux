@@ -4,8 +4,9 @@ import {
   deletedTask,
   toggleCompletedTask,
 } from "@/Redux/features/todo/taskSlice";
-import { useAppDispatch } from "@/Redux/hooks";
-import { useState } from "react";
+import { selectUser } from "@/Redux/features/users/userSlice";
+import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
+import { User } from "lucide-react";
 import toast from "react-hot-toast";
 import { FiCalendar, FiClock, FiEdit2, FiTrash2 } from "react-icons/fi";
 
@@ -17,14 +18,18 @@ interface Task {
   priority: "low" | "medium" | "high";
   dueDate: string;
   createdAt: string;
+  assignedTo: string | null;
 }
 interface TaskCardProps {
   task: Task;
 }
 
 export default function TaskCard({ task }: TaskCardProps) {
+  console.log("from task card:", task);
   const dispatch = useAppDispatch();
-
+  const users = useAppSelector(selectUser);
+  const assignUser = users.find((user) => user.id === task.assignedTo);
+  console.log("This is a assign User:", assignUser);
   // console.log(task.priority);
   const handleCompletedTask = (id: string) => {
     dispatch(toggleCompletedTask(id));
@@ -97,6 +102,13 @@ export default function TaskCard({ task }: TaskCardProps) {
                 <span>{task.createdAt}</span>
               </div>
             )}
+
+            <div className="ml-auto flex items-center gap-1.5">
+              <User className="text-purple-600 dark:text-purple-400" />
+              <span className="text-white">
+                Assign To - {assignUser ? assignUser.name : "N/A"}
+              </span>
+            </div>
           </div>
         </div>
 

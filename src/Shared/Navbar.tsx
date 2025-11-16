@@ -45,10 +45,10 @@ function Navbar() {
               Completed
             </Link>
             <Link
-              to="/about"
+              to="/user"
               className="px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:text-purple-600 dark:hover:text-purple-400 transition-all font-medium"
             >
-              About
+              Add User
             </Link>
           </div>
 
@@ -111,11 +111,11 @@ function Navbar() {
               Completed
             </Link>
             <Link
-              to="/about"
+              to="/user"
               onClick={() => setOpen(false)}
               className="block px-4 py-3 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:text-purple-600 dark:hover:text-purple-400 transition-all font-medium"
             >
-              About
+              Add User
             </Link>
 
             <div className="pt-3 space-y-3 border-t border-slate-200 dark:border-slate-700">
